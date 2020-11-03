@@ -6,6 +6,13 @@ import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
 import { PmComponent } from './pm/pm.component';
 import { AdminComponent } from './admin/admin.component';
+import { TableComponent } from './table/table.component';
+import { BillingComponent } from './billing/billing.component';
+import { ReportsComponent } from './reports/reports.component';
+import { MenuComponent } from './menu/menu.component';
+import { RatingsComponent } from './ratings/ratings.component';
+import { RolesComponent } from './roles/roles.component';
+import { DepartmentsComponent } from './departments/departments.component';
 
 const routes: Routes = [
     {
@@ -13,7 +20,7 @@ const routes: Routes = [
         component: HomeComponent
     },
     {
-        path: 'manager',
+        path: 'user',
         component: UserComponent
     },
     {
@@ -27,6 +34,34 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent
+    },
+    {
+        path: 'table',
+        component: TableComponent
+    },
+    {
+        path: 'billing',
+        component: BillingComponent
+    },
+    {
+        path: 'reports',
+        component: ReportsComponent
+    },
+    {
+        path: 'menu',
+        component: MenuComponent
+    },
+    {
+        path: 'ratings',
+        component: RatingsComponent
+    },
+    {
+        path: 'roles',
+        component: RolesComponent
+    },
+    {
+        path: 'departments',
+        component: DepartmentsComponent
     },
     {
         path: '',

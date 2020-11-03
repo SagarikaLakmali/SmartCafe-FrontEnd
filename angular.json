@@ -23,7 +23,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.css",
+              "./src/assets/resources/fontawesome-5.2.0/css/all.css",
+              "./node_modules/primeicons/primeicons.css"
             ],
             "scripts": []
           },
