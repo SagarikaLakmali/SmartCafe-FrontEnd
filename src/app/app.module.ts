@@ -6,7 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
-import { UserComponent } from './user/user.component';
+import { UsersComponent } from './users/users.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { PmComponent } from './pm/pm.component';
@@ -65,7 +65,7 @@ import {KeyFilterModule} from 'primeng/keyfilter';
   declarations: [
     AppComponent,
     LoginComponent,
-    UserComponent,
+    UsersComponent,
     HomeComponent,
     AdminComponent,
     PmComponent,
@@ -75,7 +75,7 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     MenuComponent,
     RatingsComponent,
     RolesComponent,
-    DepartmentsComponent
+    DepartmentsComponent,
   ],
   imports: [
     BrowserModule,

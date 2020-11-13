@@ -1,21 +1,25 @@
 import { Component, OnInit } from '@angular/core';
-import { Menu } from '../model/Menu';
+import { User } from '../model/User';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MenuService } from '../services/menu.service';
-import { AllMenusResponse } from '../model/AllMenusResponse';
+import { UserService } from '../services/user.service';
+import { AllUsersResponse } from '../model/AllUsersResponse';
 import { stringify } from 'querystring';
 import { CommonResponse } from '../model/CommonResponse';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, SelectItem } from 'primeng/api';
 import { TokenStorageService } from '../auth/token-storage.service';
+import { Department } from '../model/Department';
+import { DepartmentService } from '../services/department.service';
+import { Role } from '../model/Role';
+import { RoleService } from '../services/role.service';
 
 @Component({
   selector: 'app-user',
-  templateUrl: './menu.component.html',
-  styleUrls: ['./menu.component.css']
+  templateUrl: './users.component.html',
+  styleUrls: ['./users.component.css']
 })
-export class MenuComponent implements OnInit {
+export class UsersComponent implements OnInit {
 
-  constructor(private menuService:MenuService, private confirmationService: ConfirmationService, private tokenStorage: TokenStorageService) { }  
+  constructor(private userService:UserService, private confirmationService: ConfirmationService, private tokenStorage: TokenStorageService, private departmentService: DepartmentService, private roleService: RoleService) { }  
   
   loaded: boolean;
   errorMessage: string;
@@ -26,16 +30,19 @@ export class MenuComponent implements OnInit {
   selectedFile: ImageSnippet;
   isSelected: boolean;
 
-  menu: Menu= {
+  user: User= {
     guid: null,
-    name: null,
-    description: null,
+    firstName: null,
+    lastName: null,
+    email: null,
     id: null,
     image: null,
-    price: null,
+    active: null,
+    role: null,
+    address: null,
+    department: null,
     createdBy: null,
     updatedBy: null,
-    available: null
   }
 
   response: CommonResponse= {
@@ -43,19 +50,51 @@ export class MenuComponent implements OnInit {
     message: null
   }
 
-  allMenusResponse : AllMenusResponse;
-
-  filterMenuName: string;
+  allUsersResponse : AllUsersResponse;
+  filterUserName: string;
   
   page: number;
   paginator: boolean = true;
   loading: boolean;
   message: any;
 
+  departmentSelectItems: Array<Department>;
+  departmentSelectItem: Department;
+
+  roleSelectItems: Array<Role>;
+  roleSelectItem: Role;
+  states: SelectItem[];
+
   ngOnInit() {
+
+    this.states = [
+      { label: 'Please Select', value: '' },
+      { label: 'ACT', value: 'ACT' },
+      { label: 'NSW', value: 'NSW' },
+      { label: 'NT', value: 'NT' },
+      { label: 'QLD', value: 'QLD' },
+      { label: 'SA', value: 'SA' },
+      { label: 'TAS', value: 'TAS' },
+      { label: 'VIC', value: 'VIC' },
+      { label: 'WA', value: 'WA' },
+    ];
+
+
+    this.departmentService.getAllDepartments()
+      .subscribe(departmentSelectItems => {
+        this.departmentSelectItems = departmentSelectItems;
+
+        console.log(JSON.stringify(this.departmentSelectItems));
+    });
+
+    this.roleService.getAllRoles()
+      .subscribe(roleSelectItems => {
+        this.roleSelectItems = roleSelectItems;
+    });
+
     this.isSelected = false;
     this.loaded = false;
-    this.getAllMenus(true);
+    this.getAllUsers(true);
     this.loaded = true;
   }  
   
@@ -69,28 +108,31 @@ export class MenuComponent implements OnInit {
     if (!this.error) {
       this.loaded = false;
       if(!this.update){
-        this.menu.createdBy = this.tokenStorage.getUsername();
+        this.user.createdBy = this.tokenStorage.getUsername();
       }
       if(this.isSelected){
-        this.menu.image = this.selectedFile.src;
+        this.user.image = this.selectedFile.src;
       }
-      this.menuService.createMenu(this.menu)
+      this.userService.createUser(this.user)
         .subscribe(r => {
           this.response = r;
           this.loaded = true;
 
-          if(this.menu.id != null && this.menu.id.length > 0){
-            this.successMessage = "Menu updated successfully.";
+          if(this.user.id != null && this.user.id.length > 0){
+            this.successMessage = "User updated successfully.";
           }else{
-            this.successMessage = "Menu created successfully.";
+            this.successMessage = "User created successfully.";
           }
           
           this.success = true;
-          this.menu.name = "";
-          this.menu.description = "";
-          this.menu.image = "";
-          this.menu.price = null;
-          this.menu.available = false;
+          this.user.firstName = "";
+          this.user.lastName = "";
+          this.user.image = "";
+          this.user.email = "";
+          this.user.active = false;
+          this.user.role = null;
+          this.user.address = null;
+          this.user.department = null;
           this.selectedFile = null;
           this.ngOnInit();
         }, error => {
@@ -106,11 +148,11 @@ export class MenuComponent implements OnInit {
 
   validate(){
 
-    if (this.menu.name == null || this.menu.name.length <= 0){
+    if (this.user.firstName == null || this.user.firstName.length <= 0){
       this.errorMessage = this.errorMessage + "Name ";
     }
 
-    if (this.menu.price == null || this.menu.price <= 0){
+    if (this.user.lastName == null || this.user.lastName.length <= 0){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
@@ -124,7 +166,7 @@ export class MenuComponent implements OnInit {
       this.errorMessage = this.errorMessage + "Image ";
     }
 
-    if (this.update && (this.menu.image == null || this.menu.image.length == 0)){
+    if (this.update && (this.user.image == null || this.user.image.length == 0)){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
@@ -132,7 +174,7 @@ export class MenuComponent implements OnInit {
     }
     
 
-    if (this.menu.description == null || this.menu.description.length <= 0){
+    if (this.user.email == null || this.user.email.length <= 0){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
@@ -151,14 +193,18 @@ export class MenuComponent implements OnInit {
   }
 
   clear(){
-    this.menu.id = "";
-    this.menu.guid = null;
-    this.menu.name = "";
-    this.menu.description = "";
-    this.menu.image = "";
-    this.menu.price = null;
-    this.menu.available = false;
+
+    this.user.firstName = "";
+    this.user.lastName = "";
+    this.user.image = "";
+    this.user.email = "";
+    this.user.active = false;
+    this.user.role = null;
+    this.user.address = null;
+    this.user.department = null;
     this.selectedFile = null;
+    this.user.id = "";
+    this.user.guid = null;
     this.errorMessage = "";
     this.successMessage = "";
     this.error = false;
@@ -172,22 +218,22 @@ export class MenuComponent implements OnInit {
     this.success = false;
   }
 
-  fetchMenusLazy(event) {
+  fetchUsersLazy(event) {
     this.loading = true;
     this.page = event.first / 15;
 
-    this.getAllMenus(false);
+    this.getAllUsers(false);
   }
 
-  getAllMenus(reset: boolean) {
+  getAllUsers(reset: boolean) {
     if (reset) {
       this.page = 0;
     }
 
-    this.menuService.findAllMenus(this.page)
-      .subscribe((allMenusResponse: AllMenusResponse) => {
-        this.allMenusResponse = allMenusResponse
-        if (this.allMenusResponse.content.length == 0) {
+    this.userService.findAllUsers(this.page)
+      .subscribe((allUsersResponse: AllUsersResponse) => {
+        this.allUsersResponse = allUsersResponse
+        if (this.allUsersResponse.content.length == 0) {
           this.paginator = false;
         } else {
           this.paginator = true;
@@ -197,40 +243,40 @@ export class MenuComponent implements OnInit {
       ); 
   }
 
-  editMenu(menu: Menu){
-    this.menu.name = menu.name;
-    this.menu.description = menu.description;
-    this.menu.guid = menu.guid;
-    this.menu.id = menu.id;
-    this.menu.price = menu.price;
-    this.menu.available = menu.available;
-    this.menu.image = menu.image;
+  editUser(user: User){
+    /*this.user.name = user.name;
+    this.user.description = user.description;
+    this.user.guid = user.guid;
+    this.user.id = user.id;
+    this.user.price = user.price;
+    this.user.available = user.available;
+    this.user.image = user.image;*/
     this.update = true;
   }
 
-  updateMenu(){
-    this.menu.updatedBy = this.tokenStorage.getUsername();
+  updateUser(){
+    this.user.updatedBy = this.tokenStorage.getUsername();
     this.save();
     this.update = false;
   }
 
-  delete(menu: Menu){
-    console.log(JSON.stringify(menu));
+  delete(user: User){
+    console.log(JSON.stringify(user));
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete '+ menu.name + '?',
+      message: 'Are you sure you want to delete '+ user.firstName + '?',
       accept: () => {
-        this.deleteMenu(menu.id);
+        this.deleteUser(user.id);
       }
     });
   }
 
-  deleteMenu(id: string) {
+  deleteUser(id: string) {
     this.errorMessage = "";
     this.successMessage = "";
     this.error = false;
     this.success = false;
 
-    this.menuService.deleteMenu(id).subscribe(r => {
+    this.userService.deleteUser(id).subscribe(r => {
       this.response = r;
 
       if(this.response.code != null && this.response.code == "200"){
@@ -250,7 +296,7 @@ export class MenuComponent implements OnInit {
     const reader = new FileReader();
     reader.addEventListener('load', (event: any) => {
       this.selectedFile = new ImageSnippet(event.target.result, file);
-      this.menu.image = this.selectedFile.src;
+      this.user.image = this.selectedFile.src;
     });
     reader.readAsDataURL(file);
   }

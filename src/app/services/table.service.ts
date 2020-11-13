@@ -3,38 +3,33 @@ import { HttpClient, HttpHeaders, HttpParams, HttpResponse } from '@angular/comm
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { TokenStorageService } from '../auth/token-storage.service';
-import { Role } from '../model/Role';
-import { AllRolesResponse } from '../model/AllRolesResponse';
+import { Table } from '../model/Table';
+import { AllTablesResponse } from '../model/AllTablesResponse';
 import { CommonResponse } from '../model/CommonResponse';
 
 @Injectable({
   providedIn: 'root'
 })
-export class RoleService {
+export class TableService {
 
   constructor(private http: HttpClient, private tokenService: TokenStorageService) { }
 
   readonly apiEndPoint = environment.apiEndPoint;
   public headers = new HttpHeaders({ 'Authorization': 'Bearer '+this.tokenService.getToken(), 'Content-Type': 'application/json' })
 
-  createRole(role: Role): Observable<CommonResponse> {
+  createTable(table: Table): Observable<CommonResponse> {
     const headers = new HttpHeaders({ 'Authorization': 'Bearer '+this.tokenService.getToken() });
-    return this.http.post<CommonResponse>(this.apiEndPoint + 'role/create', role, { headers });
+    return this.http.post<CommonResponse>(this.apiEndPoint + 'table/create', table, { headers });
   }
 
-  findAllRoles(page: number): Observable<AllRolesResponse> {
+  findAllTables(page: number): Observable<AllTablesResponse> {
     const headers = this.headers
-    return this.http.post<AllRolesResponse>(this.apiEndPoint + 'role/search/' + page, { headers });
+    return this.http.post<AllTablesResponse>(this.apiEndPoint + 'table/search/' + page, { headers });
   }
 
-  deleteRole(id: string): Observable<CommonResponse> {
+  deleteTable(id: string): Observable<CommonResponse> {
     const headers = this.headers;
-    return this.http.delete<CommonResponse>(this.apiEndPoint + 'role/delete?id='+id, { headers });
-  }
-
-  getAllRoles(): Observable<Role[]> {
-    const headers = this.headers;
-    return this.http.get<Role[]>(this.apiEndPoint + 'role/all', { headers });
+    return this.http.delete<CommonResponse>(this.apiEndPoint + 'table/delete?id='+id, { headers });
   }
 
 }

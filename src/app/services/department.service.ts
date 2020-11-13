@@ -32,4 +32,9 @@ export class DepartmentService {
     return this.http.delete<CommonResponse>(this.apiEndPoint + 'department/delete?id='+id, { headers });
   }
 
+  getAllDepartments(): Observable<Department[]> {
+    const headers = this.headers;
+    return this.http.get<Department[]>(this.apiEndPoint + 'department/all', { headers });
+  }
+
 }

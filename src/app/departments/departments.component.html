@@ -4,12 +4,6 @@
       <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="!loaded"></p-progressBar>
     </div>
   
-    <div class="spinner" *ngIf="!loaded">
-      <div class="possition">
-        <p-progressSpinner></p-progressSpinner>
-      </div>
-    </div>
-  
     <div class="ui-g-12"></div>
   
     <div class="row" [hidden]="!error" *ngIf="errorMessage">  
