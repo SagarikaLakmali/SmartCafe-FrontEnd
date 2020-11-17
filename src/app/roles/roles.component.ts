@@ -160,7 +160,6 @@ export class RolesComponent implements OnInit {
   }
 
   delete(role: Role){
-    console.log(JSON.stringify(role));
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete '+ role.name + '?',
       accept: () => {

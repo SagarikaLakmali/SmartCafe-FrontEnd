@@ -215,7 +215,6 @@ export class MenuComponent implements OnInit {
   }
 
   delete(menu: Menu){
-    console.log(JSON.stringify(menu));
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete '+ menu.name + '?',
       accept: () => {

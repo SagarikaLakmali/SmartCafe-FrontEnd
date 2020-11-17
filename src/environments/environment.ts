@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiEndPoint: 'http://localhost:8080/SmartCafe/',
+  tableRole: 'CUSTOMER'
 };
 
 /*

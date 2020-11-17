@@ -60,6 +60,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpModule } from '@angular/http';
 import {KeyFilterModule} from 'primeng/keyfilter';
+import { CustomerMenuComponent } from './customermenu/customermenu.component';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,7 @@ import {KeyFilterModule} from 'primeng/keyfilter';
     RatingsComponent,
     RolesComponent,
     DepartmentsComponent,
+    CustomerMenuComponent
   ],
   imports: [
     BrowserModule,

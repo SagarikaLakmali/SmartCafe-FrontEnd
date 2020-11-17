@@ -1,0 +1,89 @@
+<div class="mainContent" >
+    <p-confirmDialog header="" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+    <div style="height: 6px;">
+      <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="!loaded"></p-progressBar>
+    </div>
+  
+    <div class="ui-g-12"></div>
+  
+    <div class="row" [hidden]="!error" *ngIf="errorMessage">  
+      <div class="alert alert-danger alert-dismissible">  
+        <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+        <strong>{{errorMessage}}</strong>  
+      </div>  
+    </div>   
+  
+    <div class="row" [hidden]="!success" *ngIf="successMessage">  
+      <div class="alert alert-success alert-dismissible">  
+        <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+        <strong>{{successMessage}}</strong>  
+      </div>  
+    </div>  
+  
+    <div class="sub-topic">Menu</div>
+    <span *ngIf="cartSize"><strong><a (click)="viewCart()">Cart: {{cartSize}} Item(s)</a></strong></span>
+    <span *ngIf="showCart"><strong><br><a (click)="backToMenu()">Back to Menu</a></strong></span>
+    <span *ngIf="orderStatus"><strong><br><a (click)="viewOrderStatus()">Order Status</a></strong></span>
+</div>
+  
+<div *ngIf="!showCart">
+  <p-table #allMenusTable [columns]="cols" *ngIf="allMenusResponse"  [value]="allMenusResponse.content" [lazy]="true"
+    (onLazyLoad)="fetchMenusLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allMenusResponse.totalElements [loading]="loading"> 
+      <ng-template pTemplate="header" let-columns>
+        <tr style="font-size: 17px; color: azure;">
+          <th style="width: 20%;">Name</th>
+          <th style="width: 30%;">Description</th>
+          <th style="width: 15%;">Price</th>
+          <th style="width: 25%;">Image</th>
+          <th style="width: 10%;text-align: center;"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-menu let-i="rowIndex">
+        <tr style="font-size: 15px" *ngIf="menu.available">
+          <td>{{menu.name}}</td>
+          <td>{{menu.description}}</td>
+          <td>{{ menu.price | number:'1.2-2' }}</td>
+          <td *ngIf="menu.image"><img [src]="menu.image" width="100%; height: 100%"/></td>
+          <td *ngIf="!menu.image"></td>
+          <td style="text-align: center;">
+            <span (click)="addToCart(menu)" class="fas fa fa-plus-square" style="color:#05a012; font-size: 17px; cursor:pointer"></span>              
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
+</div>
+
+<div *ngIf="showCart">
+  <p-table #cartTable [columns]="cols" *ngIf="cartItems"  [value]="cartItems" [loading]="loading"> 
+      <ng-template pTemplate="header" let-columns>
+        <tr style="font-size: 17px; color: azure;">
+          <th style="width: 20%;">Name</th>
+          <th style="width: 30%;">Description</th>
+          <th style="width: 15%;">Price</th>
+          <th style="width: 25%;">Image</th>
+          <th style="width: 10%;text-align: center;"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-menu let-i="rowIndex">
+        <tr style="font-size: 15px">
+          <td>{{menu.name}}</td>
+          <td>{{menu.description}}</td>
+          <td>{{ menu.price | number:'1.2-2' }}</td>
+          <td *ngIf="menu.image"><img [src]="menu.image" width="100%; height: 100%"/></td>
+          <td *ngIf="!menu.image"></td>
+          <td style="text-align: center;">
+            <span (click)="removeCart(menu)" class="fa fa-times-circle" style="color:#e60a0a; font-size: 17px; cursor:pointer"></span>              
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
+  <span><strong><br>Sub Total: {{ ordertotal | number:'1.2-2' }} </strong><br>(exclusive of Service Charge and Government Taxes)</span>
+  <div style="margin-top: 25px; float: left; text-align: right; width: 96%">
+    <div class="ui-dialog-buttonpane ui-helper-clearfix">
+      <button type="submit" class="btn-dis" (click)="clearCart()" *ngIf="ordertotal > 0">Clear Cart</button> &nbsp;
+      <button type="submit" class="btn-Success" (click)="order()" *ngIf="ordertotal > 0">Order</button>
+    </div>
+</div>
+  

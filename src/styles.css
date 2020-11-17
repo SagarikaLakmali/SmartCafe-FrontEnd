@@ -2823,8 +2823,6 @@ input[type=text]::-ms-clear {
 }
 
 .ui-dropdown .ui-dropdown-label {
-	display: block;
-	border: none;
 	white-space: nowrap;
 	overflow: hidden;
 	font-weight: normal;

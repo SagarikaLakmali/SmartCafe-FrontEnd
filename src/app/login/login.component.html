@@ -1,9 +1,62 @@
 <div *ngIf="isLoggedIn; else loggedOut">
-  Logged in as {{roles}}.
+  <div class="sub-topic">Welcome to SmartCafe {{user.firstName}} {{user.lastName}}</div>
+  <span *ngIf="showWelcome">&nbsp;&nbsp;You logged in as a {{roles}}.</span>
+  <div class="ui-g-12" style="padding-left: 10px;">
+    <div class="ui-g-2">
+      <img [src]="user.image" width="100" height="100"/>
+    </div>
+    <div class="ui-g-4" style="width: 90%; height:20px">
+    </div>
+    <div class="ui-g-4" *ngIf="showWelcome">
+      Click <a class="nav-link" (click)="changePassword()">here</a> to change password!
+    </div>
+  </div>
+</div>
+
+<div class="row" [hidden]="!error" *ngIf="errorMsg" style="padding-top: 200px;">  
+  <div class="alert alert-danger alert-dismissible">  
+    <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+    <strong>{{errorMsg}}</strong>  
+  </div>  
+</div>   
+
+<div class="row" [hidden]="!success" *ngIf="successMessage" style="padding-top: 200px;">  
+  <div class="alert alert-success alert-dismissible">  
+    <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+    <strong>{{successMessage}}</strong>  
+  </div>  
+</div>  
+<div class="ui-g-12" style="padding-left: 250px; width: 100%;" *ngIf="isChangePasswordClicked">
+  <div class="ui-g-4">
+    Existing Password <font style="color : red">*</font>
+  </div>
+  <div class="ui-g-6">
+      <input pInputText [(ngModel)]="currentPassword" style="width: 90%" minlength=6 type="password"/>
+  </div>
+
+  <div class="ui-g-4">
+    New Password <font style="color : red">*</font>
+  </div>
+  <div class="ui-g-6">
+      <input pInputText [(ngModel)]="newPassword" style="width: 90%" ngMaxlength=7 type="password"/>
+  </div>
+
+  <div class="ui-g-4">
+    Password Confirmation<font style="color : red">*</font>
+  </div>
+  <div class="ui-g-6">
+      <input pInputText [(ngModel)]="confPassword" style="width: 90%" ngMaxlength=7 type="password"/>
+  </div>
+</div>
+<div style="margin-top: 25px; float: left; text-align: right; width: 82%;" *ngIf="isChangePasswordClicked">
+  <div class="ui-dialog-buttonpane ui-helper-clearfix">
+    <button type="submit" class="btn-dis" (click)="clear()">Clear</button> &nbsp;
+    <button type="submit" class="btn-Success" (click)="updatePassword()">Update</button>
+  </div>
 </div>
 
 <ng-template #loggedOut>
-  <div class="row col-sm-6" style="max-width:350px;">
+  <div class="row col-sm-9" style="max-width:750px; padding-left: 450px;">
     <form name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate>
       <div class="form-group">
         <label for="username">Username</label>

@@ -25,13 +25,17 @@
       <li *ngIf="authority === 'manager'" class="nav-item">
         <a class="nav-link" routerLink="departments">Departments</a>
       </li>
+      <li *ngIf="authority === 'customer'" class="nav-item">
+        <a class="nav-link" routerLink="customermenu"></a>
+      </li>
+
       <li *ngIf="!authority" class="nav-item">
         <a class="nav-link" routerLink="login">Login</a>
       </li>
-      <li *ngIf="authority" class="nav-item">
-        <a class="nav-link" (click)="logout()" style="margin-left: 800px;">Logout</a>
+      <li *ngIf="authority && authority != 'customer'" class="nav-item">
+        <a class="nav-link" (click)="logout()" style="margin-left: 600px;" routerLink="home">Logout</a>
       </li>
-      <li *ngIf="authority" class="nav-item">
+      <li *ngIf="authority && authority != 'customer'" class="nav-item">
         <a class="nav-link">{{userName}}</a>
       </li>
     </ul>

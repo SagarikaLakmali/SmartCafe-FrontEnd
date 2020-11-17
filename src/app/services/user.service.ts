@@ -6,6 +6,7 @@ import { environment } from 'src/environments/environment';
 import { User } from '../model/User';
 import { CommonResponse } from '../model/CommonResponse';
 import { AllUsersResponse } from '../model/AllUsersResponse';
+import { Login } from '../model/Login';
 
 @Injectable({
   providedIn: 'root'
@@ -51,5 +52,15 @@ export class UserService {
   getAllUsers(): Observable<User[]> {
     const headers = this.headers;
     return this.http.get<User[]>(this.apiEndPoint + 'user/all', { headers });
+  }
+
+  getUser(email: string): Observable<User> {
+    const headers = this.headers;
+    return this.http.get<User>(this.apiEndPoint + 'user/getbyemail?email='+email, { headers });
+  }
+
+  updatePassword(login: Login): Observable<CommonResponse> {
+    const headers = new HttpHeaders({ 'Authorization': 'Bearer '+this.tokenService.getToken() });
+    return this.http.post<CommonResponse>(this.apiEndPoint + 'user/changepassword', login, { headers });
   }
 }

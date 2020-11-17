@@ -1,21 +1,21 @@
 import { Component, OnInit } from '@angular/core';
-import { Table } from '../model/Table';
+import { Menu } from '../model/Menu';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { TableService } from '../services/table.service';
-import { AllTablesResponse } from '../model/AllTablesResponse';
+import { MenuService } from '../services/menu.service';
+import { AllMenusResponse } from '../model/AllMenusResponse';
 import { stringify } from 'querystring';
 import { CommonResponse } from '../model/CommonResponse';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MenuItem } from 'primeng/api';
 import { TokenStorageService } from '../auth/token-storage.service';
 
 @Component({
   selector: 'app-user',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.css']
+  templateUrl: './customermenu.component.html',
+  styleUrls: ['./customermenu.component.css']
 })
-export class TableComponent implements OnInit {
+export class CustomerMenuComponent implements OnInit {
 
-  constructor(private tableService:TableService, private confirmationService: ConfirmationService, private tokenStorage: TokenStorageService) { }  
+  constructor(private menuService:MenuService, private confirmationService: ConfirmationService, private tokenStorage: TokenStorageService) { }  
   
   loaded: boolean;
   errorMessage: string;
@@ -26,13 +26,15 @@ export class TableComponent implements OnInit {
   selectedFile: ImageSnippet;
   isSelected: boolean;
 
-  table: Table= {
+  menu: Menu= {
     guid: null,
     name: null,
     description: null,
     id: null,
     image: null,
-    seatingCap: null,
+    price: null,
+    createdBy: null,
+    updatedBy: null,
     available: null
   }
 
@@ -41,19 +43,27 @@ export class TableComponent implements OnInit {
     message: null
   }
 
-  allTablesResponse : AllTablesResponse;
+  allMenusResponse : AllMenusResponse;
 
-  filterTableName: string;
+  filterMenuName: string;
   
   page: number;
   paginator: boolean = true;
   loading: boolean;
   message: any;
 
+  cartItems: MenuItem[] = [];
+
+  cartSize: number;
+  showCart: boolean = false;
+  ordertotal: number = 0;
+
+  orderStatus: boolean = false;
+
   ngOnInit() {
     this.isSelected = false;
     this.loaded = false;
-    this.getAllTables(true);
+    this.getAllMenus(true);
     this.loaded = true;
   }  
   
@@ -66,27 +76,29 @@ export class TableComponent implements OnInit {
     this.validate();
     if (!this.error) {
       this.loaded = false;
-
-      if(this.isSelected){
-        this.table.image = this.selectedFile.src;
+      if(!this.update){
+        this.menu.createdBy = this.tokenStorage.getUsername();
       }
-      this.tableService.createTable(this.table)
+      if(this.isSelected){
+        this.menu.image = this.selectedFile.src;
+      }
+      this.menuService.createMenu(this.menu)
         .subscribe(r => {
           this.response = r;
           this.loaded = true;
 
-          if(this.table.id != null && this.table.id.length > 0){
-            this.successMessage = "Table updated successfully.";
+          if(this.menu.id != null && this.menu.id.length > 0){
+            this.successMessage = "Menu updated successfully.";
           }else{
-            this.successMessage = "Table created successfully.";
+            this.successMessage = "Menu created successfully.";
           }
           
           this.success = true;
-          this.table.name = "";
-          this.table.description = "";
-          this.table.image = "";
-          this.table.seatingCap = null;
-          this.table.available = false;
+          this.menu.name = "";
+          this.menu.description = "";
+          this.menu.image = "";
+          this.menu.price = null;
+          this.menu.available = false;
           this.selectedFile = null;
           this.ngOnInit();
         }, error => {
@@ -102,15 +114,15 @@ export class TableComponent implements OnInit {
 
   validate(){
 
-    if (this.table.name == null || this.table.name.length <= 0){
+    if (this.menu.name == null || this.menu.name.length <= 0){
       this.errorMessage = this.errorMessage + "Name ";
     }
 
-    if (this.table.seatingCap == null || this.table.seatingCap <= 0){
+    if (this.menu.price == null || this.menu.price <= 0){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
-      this.errorMessage = this.errorMessage + "Seating Capacity ";
+      this.errorMessage = this.errorMessage + "Price ";
     }
 
     if (!this.update && this.selectedFile == null){
@@ -120,7 +132,7 @@ export class TableComponent implements OnInit {
       this.errorMessage = this.errorMessage + "Image ";
     }
 
-    if (this.update && (this.table.image == null || this.table.image.length == 0)){
+    if (this.update && (this.menu.image == null || this.menu.image.length == 0)){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
@@ -128,7 +140,7 @@ export class TableComponent implements OnInit {
     }
     
 
-    if (this.table.description == null || this.table.description.length <= 0){
+    if (this.menu.description == null || this.menu.description.length <= 0){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
@@ -147,13 +159,13 @@ export class TableComponent implements OnInit {
   }
 
   clear(){
-    this.table.id = "";
-    this.table.guid = null;
-    this.table.name = "";
-    this.table.description = "";
-    this.table.image = "";
-    this.table.seatingCap = null;
-    this.table.available = false;
+    this.menu.id = "";
+    this.menu.guid = null;
+    this.menu.name = "";
+    this.menu.description = "";
+    this.menu.image = "";
+    this.menu.price = null;
+    this.menu.available = false;
     this.selectedFile = null;
     this.errorMessage = "";
     this.successMessage = "";
@@ -168,22 +180,22 @@ export class TableComponent implements OnInit {
     this.success = false;
   }
 
-  fetchTablesLazy(event) {
+  fetchMenusLazy(event) {
     this.loading = true;
     this.page = event.first / 15;
 
-    this.getAllTables(false);
+    this.getAllMenus(false);
   }
 
-  getAllTables(reset: boolean) {
+  getAllMenus(reset: boolean) {
     if (reset) {
       this.page = 0;
     }
 
-    this.tableService.findAllTables(this.page)
-      .subscribe((allTablesResponse: AllTablesResponse) => {
-        this.allTablesResponse = allTablesResponse
-        if (this.allTablesResponse.content.length == 0) {
+    this.menuService.findAllMenus(this.page)
+      .subscribe((allMenusResponse: AllMenusResponse) => {
+        this.allMenusResponse = allMenusResponse
+        if (this.allMenusResponse.content.length == 0) {
           this.paginator = false;
         } else {
           this.paginator = true;
@@ -193,38 +205,39 @@ export class TableComponent implements OnInit {
       ); 
   }
 
-  editTable(table: Table){
-    this.table.name = table.name;
-    this.table.description = table.description;
-    this.table.guid = table.guid;
-    this.table.id = table.id;
-    this.table.seatingCap = table.seatingCap;
-    this.table.available = table.available;
-    this.table.image = table.image;
+  editMenu(menu: Menu){
+    this.menu.name = menu.name;
+    this.menu.description = menu.description;
+    this.menu.guid = menu.guid;
+    this.menu.id = menu.id;
+    this.menu.price = menu.price;
+    this.menu.available = menu.available;
+    this.menu.image = menu.image;
     this.update = true;
   }
 
-  updateTable(){
+  updateMenu(){
+    this.menu.updatedBy = this.tokenStorage.getUsername();
     this.save();
     this.update = false;
   }
 
-  delete(table: Table){
+  delete(menu: Menu){
     this.confirmationService.confirm({
-      message: 'Are you sure you want to delete '+ table.name + '?',
+      message: 'Are you sure you want to delete '+ menu.name + '?',
       accept: () => {
-        this.deleteTable(table.id);
+        this.deleteMenu(menu.id);
       }
     });
   }
 
-  deleteTable(id: string) {
+  deleteMenu(id: string) {
     this.errorMessage = "";
     this.successMessage = "";
     this.error = false;
     this.success = false;
 
-    this.tableService.deleteTable(id).subscribe(r => {
+    this.menuService.deleteMenu(id).subscribe(r => {
       this.response = r;
 
       if(this.response.code != null && this.response.code == "200"){
@@ -244,9 +257,48 @@ export class TableComponent implements OnInit {
     const reader = new FileReader();
     reader.addEventListener('load', (event: any) => {
       this.selectedFile = new ImageSnippet(event.target.result, file);
-      this.table.image = this.selectedFile.src;
+      this.menu.image = this.selectedFile.src;
     });
     reader.readAsDataURL(file);
+  }
+
+  addToCart(menu: Menu){
+    this.cartItems.push(menu);
+    this.cartSize = this.cartItems.length;
+    this.ordertotal = this.ordertotal + menu.price;
+  }
+
+  viewCart(){
+    this.showCart = true;
+  }
+
+  backToMenu(){
+    this.showCart = false;
+  }
+
+  removeCart(menu){
+    this.cartItems.pop();
+    this.cartSize = this.cartItems.length;
+    this.ordertotal = this.ordertotal - menu.price;
+    if(this.ordertotal <= 0){
+      this.showCart = false;
+    }
+  }
+
+  clearCart(){
+    this.cartItems = [];
+    this.cartSize = 0;
+    this.ordertotal = 0;
+    this.showCart = false;
+  }
+
+  order(){
+    this.orderStatus = true;
+    this.clearCart();
+  }
+
+  viewOrderStatus(){
+
   }
 }
 

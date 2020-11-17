@@ -27,6 +27,9 @@ export class AppComponent implements OnInit {
         } else if (role === 'MANAGER'){
           this.authority = 'manager';
           return false;
+        } else if (role === 'CUSTOMER'){
+          this.authority = 'customer';
+          return false;
         }
         this.authority = 'user';
         return true;
@@ -36,6 +39,7 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.tokenStorage.signOut();
-    window.location.reload();
+    this.authority = null;
+    //window.location.reload();
   }
 }

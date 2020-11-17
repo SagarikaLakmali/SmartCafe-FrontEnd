@@ -20,7 +20,7 @@
     </div>  
   </div>  
 
-  <div class="sub-topic">Users</div>
+  <div class="sub-topic">Staff Members</div>
   <div class="ui-g-12">
 
   </div>
@@ -49,17 +49,63 @@
     <div class="ui-g-2">
       Role <font style="color : red">*</font>
     </div>
-    <div class="ui-g-4">
-      <p-dropdown [options]="roleSelectItems" [(ngModel)]="roleSelectItem" optionLabel="name" (click)="clearValues()"></p-dropdown>
-
-      :&nbsp;<p-dropdown [options]="states" ></p-dropdown>
+    <div class="ui-g-4" >
+      <select name="role" style="width: 90%; height:37px" (change)="selectRoleChange($event)"> 
+        <option [ngValue]="undefined" hidden>Select Role</option>
+        <option *ngFor="let role of roleSelectItems" [value]="roleSelectItem">{{role.name}}</option> 
+      </select> 
     </div>
 
     <div class="ui-g-2">
       Department <font style="color : red">*</font>
     </div>
     <div class="ui-g-4">
-      <p-dropdown [options]="departmentSelectItems" [(ngModel)]="departmentSelectItem" optionLabel="name" (click)="clearValues()"></p-dropdown>
+      <select name="department" style="width: 90%; height:37px" (change)="selectDepartmentChange($event)"> 
+        <option [ngValue]="undefined" hidden>Select Department</option>
+        <option *ngFor="let department of departmentSelectItems" [value]="departmentSelectItem">{{department.name}}</option> 
+      </select> 
+    </div>
+    <div class="ui-g-2">
+      Active
+    </div>
+    <div class="ui-g-4" style="width:30%;">
+      <p-checkbox binary="true" [(ngModel)]="user.active" [value]="user.active"></p-checkbox>
+    </div>
+    <div class="ui-g-2">
+    </div>
+    <div class="ui-g-4" style="width: 90%; height:10px">
+    </div>
+
+    <div class="ui-g-2">
+      Address Line 1 <font style="color : red">*</font>
+    </div>
+    <div class="ui-g-4" >
+      <input pInputText [(ngModel)]="address.line1" style="width: 90%" minlength=6/>
+    </div>
+
+    <div class="ui-g-2">
+      Address Line 2 <font style="color : red">*</font>
+    </div>
+    <div class="ui-g-4">
+      <input pInputText [(ngModel)]="address.line2" style="width: 90%" minlength=6/>
+    </div>
+   
+    <div class="ui-g-2">
+      City <font style="color : red">*</font>
+    </div>
+    <div class="ui-g-4">
+      <input pInputText [(ngModel)]="address.city" style="width: 90%" minlength=6/>
+    </div>
+
+    <div class="ui-g-2">
+    </div>
+    <div class="ui-g-4">
+      <input pInputText [(ngModel)]="address.id" style="width: 90%" minlength=6 hidden/>
+    </div>
+
+    <div class="ui-g-2">
+    </div>
+    <div class="ui-g-4" style="width: 90%; height:10px">
     </div>
 
     <div class="ui-g-2">
@@ -74,32 +120,12 @@
 
     <div class="ui-g-2">
     </div>
+    <div class="ui-g-4" style="width: 90%; height:20px">
+    </div>
+    <div class="ui-g-2">
+    </div>
     <div class="ui-g-4" *ngIf="user.image">
-      <img [src]="user.image" width="200" height="100"/>
-    </div>
-
-    <!--<div class="ui-g-2">
-      Address Line 1 <font style="color : red">*</font>
-    </div>
-    <div class="ui-g-4">
-      <input pInputText [(ngModel)]="user.address.line1" style="width: 90%" minlength=6/>
-    </div>
-
-    <div class="ui-g-2">
-      Address Line 2 <font style="color : red">*</font>
-    </div>
-    <div class="ui-g-4">
-      <input pInputText [(ngModel)]="user.address.line2" style="width: 90%" minlength=6/>
-    </div>
-   
-    <div class="ui-g-2">
-      City <font style="color : red">*</font>
-    </div>
-    <div class="ui-g-4">
-      <input pInputText [(ngModel)]="user.address.city" style="width: 90%" minlength=6/>
-    </div>-->
-    
-    <div class="ui-g-2">
+      <img [src]="user.image" width="100" height="100"/>
     </div>
 
   </div>
@@ -117,30 +143,30 @@
   (onLazyLoad)="fetchUsersLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allUsersResponse.totalElements [loading]="loading"> 
     <ng-template pTemplate="header" let-columns>
       <tr style="font-size: 17px; color: azure;">
-        <th style="width: 10%;text-align: center;">User Id</th>
-        <th style="width: 20%;">Image</th>
-        <th style="width: 20%;">Name</th>
-        <th style="width: 20%;">Role</th>
-        <th style="width: 20%;">Department</th>
-        <th style="width: 25%;">Email</th>
-        <th style="width: 7.5%;">Address</th>
-        <th style="width: 7.5%;">Active</th>
-        <th style="width: 7.5%;">Created By</th>
-        <th style="width: 10%;text-align: center;">Action</th>
+        <th style="width: 5%;text-align: center;">User Id</th>
+        <th style="width: 10%;">Image</th>
+        <th style="width: 10%;">Name</th>
+        <th style="width: 8%;">Role</th>
+        <th style="width: 8%;">Department</th>
+        <th style="width: 17%;">Email/Username</th>
+        <th style="width: 16%;">Address</th>
+        <th style="width: 5%;">Active</th>
+        <th style="width: 13%;">Created By</th>
+        <th style="width: 8%;text-align: center;">Action</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-user let-i="rowIndex">
       <tr style="font-size: 15px">
         <td style="text-align: center;">{{user.guid}}</td>
-        <td *ngIf="user.image"><img [src]="user.image" width="200" height="100"/></td>
-        <td>{{user.name}}</td>
-        <td>{{user.role}}</td>
-        <td>{{user.department}}</td>
+        <td *ngIf="user.image"><img [src]="user.image" width="100" height="100"/></td>
+        <td>{{user.firstName}} {{user.lastName}}</td>
+        <td>{{user.role.name}}</td>
+        <td>{{user.department.name}}</td>
         <td>{{user.email}}</td>
-        <td>{{user.address}}</td>
-        <td *ngIf="user.available">Yes</td>
-        <td *ngIf="!user.available">No</td>
-        <td>{{user.createdBy}}</td>
+        <td>{{user.address.line1}}, {{user.address.line2}}, {{user.address.city}}</td>
+        <td *ngIf="user.active">Yes</td>
+        <td *ngIf="!user.active">No</td>
+        <td style="font-size: 14px;">{{user.createdBy}}</td>
         <td *ngIf="!user.image"></td>
         <td style="text-align: center;">
           <span (click)="editUser(user)" class="fas fa fa-plus-square" style="color:#05a012; font-size: 17px; cursor:pointer"></span>

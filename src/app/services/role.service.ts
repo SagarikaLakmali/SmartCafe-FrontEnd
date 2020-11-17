@@ -37,4 +37,8 @@ export class RoleService {
     return this.http.get<Role[]>(this.apiEndPoint + 'role/all', { headers });
   }
 
+  getRole(role: string): Observable<Role> {
+    const headers = this.headers;
+    return this.http.get<Role>(this.apiEndPoint + 'role/getbyname?name='+role, { headers });
+  }
 }

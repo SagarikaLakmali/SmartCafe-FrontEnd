@@ -37,4 +37,9 @@ export class DepartmentService {
     return this.http.get<Department[]>(this.apiEndPoint + 'department/all', { headers });
   }
 
+  getDepartment(department: string): Observable<Department> {
+    const headers = this.headers;
+    return this.http.get<Department>(this.apiEndPoint + 'department/getbyname?name='+department, { headers });
+  }
+
 }

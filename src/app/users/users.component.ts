@@ -11,6 +11,8 @@ import { Department } from '../model/Department';
 import { DepartmentService } from '../services/department.service';
 import { Role } from '../model/Role';
 import { RoleService } from '../services/role.service';
+import { Address } from '../model/Address';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-user',
@@ -45,6 +47,13 @@ export class UsersComponent implements OnInit {
     updatedBy: null,
   }
 
+  address: Address={
+    id: null,
+    line1: null,
+    line2: null,
+    city: null
+  }
+
   response: CommonResponse= {
     code: null,
     message: null
@@ -60,31 +69,17 @@ export class UsersComponent implements OnInit {
 
   departmentSelectItems: Array<Department>;
   departmentSelectItem: Department;
+  department: Department;
 
   roleSelectItems: Array<Role>;
   roleSelectItem: Role;
-  states: SelectItem[];
+  role: Role;
 
   ngOnInit() {
-
-    this.states = [
-      { label: 'Please Select', value: '' },
-      { label: 'ACT', value: 'ACT' },
-      { label: 'NSW', value: 'NSW' },
-      { label: 'NT', value: 'NT' },
-      { label: 'QLD', value: 'QLD' },
-      { label: 'SA', value: 'SA' },
-      { label: 'TAS', value: 'TAS' },
-      { label: 'VIC', value: 'VIC' },
-      { label: 'WA', value: 'WA' },
-    ];
-
 
     this.departmentService.getAllDepartments()
       .subscribe(departmentSelectItems => {
         this.departmentSelectItems = departmentSelectItems;
-
-        console.log(JSON.stringify(this.departmentSelectItems));
     });
 
     this.roleService.getAllRoles()
@@ -113,6 +108,15 @@ export class UsersComponent implements OnInit {
       if(this.isSelected){
         this.user.image = this.selectedFile.src;
       }
+      if(this.roleSelectItem){
+        this.user.role = this.roleSelectItem;
+      }
+      if(this.departmentSelectItem){
+        this.user.department = this.departmentSelectItem;
+      }
+      if(this.address){
+        this.user.address = this.address;
+      }
       this.userService.createUser(this.user)
         .subscribe(r => {
           this.response = r;
@@ -134,6 +138,14 @@ export class UsersComponent implements OnInit {
           this.user.address = null;
           this.user.department = null;
           this.selectedFile = null;
+          this.address.id = null;
+          this.address.line1 = null;
+          this.address.line2 = null;
+          this.address.city = null;
+          this.roleSelectItem = null;
+          this.departmentSelectItem = null;
+          this.role = null;
+          this.department = null;
           this.ngOnInit();
         }, error => {
           this.errorMessage = error.error.message;          
@@ -149,14 +161,56 @@ export class UsersComponent implements OnInit {
   validate(){
 
     if (this.user.firstName == null || this.user.firstName.length <= 0){
-      this.errorMessage = this.errorMessage + "Name ";
+      this.errorMessage = this.errorMessage + "First Name ";
     }
 
     if (this.user.lastName == null || this.user.lastName.length <= 0){
       if(this.errorMessage != null && this.errorMessage.length > 0){
         this.errorMessage = this.errorMessage + " / ";
       }
-      this.errorMessage = this.errorMessage + "Price ";
+      this.errorMessage = this.errorMessage + "Last Name ";
+    }
+
+    if (this.user.email == null || this.user.email.length <= 0){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "Username ";
+    }
+
+    if (this.roleSelectItem == null){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "Role ";
+    }
+
+    if (this.departmentSelectItem == null){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "Department ";
+    }
+
+    if (this.address.line1 == null || this.address.line1.length <= 0){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "Address Line 1 ";
+    }
+
+    if (this.address.line2 == null || this.address.line2.length <= 0){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "Address Line 2 ";
+    }
+
+    if (this.address.city == null || this.address.city.length <= 0){
+      if(this.errorMessage != null && this.errorMessage.length > 0){
+        this.errorMessage = this.errorMessage + " / ";
+      }
+      this.errorMessage = this.errorMessage + "City ";
     }
 
     if (!this.update && this.selectedFile == null){
@@ -172,17 +226,23 @@ export class UsersComponent implements OnInit {
       }
       this.errorMessage = this.errorMessage + "Image ";
     }
-    
-
-    if (this.user.email == null || this.user.email.length <= 0){
-      if(this.errorMessage != null && this.errorMessage.length > 0){
-        this.errorMessage = this.errorMessage + " / ";
-      }
-      this.errorMessage = this.errorMessage + "Description ";
-    }
 
     if(this.errorMessage != null && this.errorMessage.length > 0){
-      this.errorMessage = this.errorMessage + "cannot be blank.";
+      this.errorMessage = this.errorMessage + "cannot be blank!";
+    }
+
+    if(this.roleSelectItem != null && this.roleSelectItem.name != environment.tableRole){
+      if (this.user.email != null && this.user.email.length > 0){
+
+        const regularExpression = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if(!regularExpression.test(String(this.user.email).toLowerCase())){
+          if(this.errorMessage != null && this.errorMessage.length > 0){
+            this.errorMessage = this.errorMessage + " ";
+          }
+          this.errorMessage = this.errorMessage + "Invalid Username!";
+        }
+        
+      }
     }
 
     if(this.errorMessage != null && this.errorMessage.trim().length > 0){
@@ -210,6 +270,14 @@ export class UsersComponent implements OnInit {
     this.error = false;
     this.success = false;
     this.update = false;
+    this.address.id = null;
+    this.address.line1 = null;
+    this.address.line2 = null;
+    this.address.city = null;
+    this.roleSelectItem = null;
+    this.departmentSelectItem = null;
+    this.role = null;
+    this.department = null;
     this.ngOnInit();
   }
 
@@ -244,13 +312,19 @@ export class UsersComponent implements OnInit {
   }
 
   editUser(user: User){
-    /*this.user.name = user.name;
-    this.user.description = user.description;
+    this.user.firstName = user.firstName;
+    this.user.lastName = user.lastName;
     this.user.guid = user.guid;
+    this.user.email = user.email;
     this.user.id = user.id;
-    this.user.price = user.price;
-    this.user.available = user.available;
-    this.user.image = user.image;*/
+    this.user.active = user.active;
+    this.roleSelectItem = user.role;
+    this.departmentSelectItem = user.department;
+    this.address.line1 = user.address.line1;
+    this.address.line2 = user.address.line2;
+    this.address.city = user.address.city;
+    this.user.image = user.image;
+    this.user.createdBy = user.createdBy;
     this.update = true;
   }
 
@@ -261,7 +335,6 @@ export class UsersComponent implements OnInit {
   }
 
   delete(user: User){
-    console.log(JSON.stringify(user));
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete '+ user.firstName + '?',
       accept: () => {
@@ -299,6 +372,22 @@ export class UsersComponent implements OnInit {
       this.user.image = this.selectedFile.src;
     });
     reader.readAsDataURL(file);
+  }
+
+  selectRoleChange($event){
+    let roleName = $event.target.options[$event.target.options.selectedIndex].text;
+    this.roleService.getRole(roleName)
+      .subscribe(role => {
+        this.roleSelectItem = role;
+      });
+  }
+
+  selectDepartmentChange($event){
+    let departmentName = $event.target.options[$event.target.options.selectedIndex].text;
+    this.departmentService.getDepartment(departmentName)
+      .subscribe(department => {
+        this.departmentSelectItem = department;
+      });
   }
 }
 

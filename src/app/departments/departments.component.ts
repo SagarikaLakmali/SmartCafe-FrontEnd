@@ -160,7 +160,6 @@ export class DepartmentsComponent implements OnInit {
   }
 
   delete(department: Department){
-    console.log(JSON.stringify(department));
     this.confirmationService.confirm({
       message: 'Are you sure you want to delete '+ department.name + '?',
       accept: () => {

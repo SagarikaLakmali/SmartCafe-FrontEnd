@@ -13,11 +13,13 @@ import { MenuComponent } from './menu/menu.component';
 import { RatingsComponent } from './ratings/ratings.component';
 import { RolesComponent } from './roles/roles.component';
 import { DepartmentsComponent } from './departments/departments.component';
+import { CustomerMenuComponent } from './customermenu/customermenu.component';
 
 const routes: Routes = [
     {
         path: 'home',
-        component: HomeComponent
+        //component: HomeComponent
+        component: LoginComponent
     },
     {
         path: 'user',
@@ -65,9 +67,13 @@ const routes: Routes = [
     },
     {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'login',
         pathMatch: 'full'
-    }
+    },
+    {
+        path: 'customermenu',
+        component: CustomerMenuComponent
+    },
 ];
 
 @NgModule({
