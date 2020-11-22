@@ -50,7 +50,6 @@ export class CashierComponent implements OnInit {
     this.isSelected = false;
     this.loaded = false;
     this.getAllOrders(true);
-    this.loaded = true;
   }
 
   close(){
@@ -66,6 +65,7 @@ export class CashierComponent implements OnInit {
     this.orderService.findAllPendingOrdersforCashier(this.page)
       .subscribe((allOrdersResponse: AllOrdersResponse) => {
         this.allOrdersResponse = allOrdersResponse
+        this.loaded = true;
         if (this.allOrdersResponse.content.length == 0) {
           this.paginator = false;
         } else {

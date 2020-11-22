@@ -36,12 +36,6 @@ export class OrdersComponent implements OnInit {
   paginator: boolean = true;
   loading: boolean;
   message: any;
-  cartItems: Menu[] = [];
-  cartSize: number;
-  showCart: boolean = false;
-  ordertotal: number = 0;
-  orderStatus: boolean = false;
-  orderStatusView = false;
   allOrdersResponse : AllOrdersResponse;
   orders: Array<Order>;
   loggedInUser = this.tokenStorage.getUsername();
@@ -50,7 +44,7 @@ export class OrdersComponent implements OnInit {
     this.isSelected = false;
     this.loaded = false;
     this.getAllOrders(true);
-    this.loaded = true;
+    
   }
 
   close(){
@@ -66,6 +60,7 @@ export class OrdersComponent implements OnInit {
     this.orderService.findAllOrdersforManager(this.page)
       .subscribe((allOrdersResponse: AllOrdersResponse) => {
         this.allOrdersResponse = allOrdersResponse
+        this.loaded = true;
         if (this.allOrdersResponse.content.length == 0) {
           this.paginator = false;
         } else {

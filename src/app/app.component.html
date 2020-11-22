@@ -1,9 +1,9 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" routerLink="home" style="font-size: 25px;">SmartCafe</a>
+      <a class="navbar-brand" routerLink="home" style="font-size: 22px;">SmartCafe</a>
     </div>
-    <ul class="nav navbar-nav" routerLinkActive="active" style="font-size: 18px;">
+    <ul class="nav navbar-nav" routerLinkActive="active" style="font-size: 16px;">
       <li *ngIf="authority === 'manager'" class="nav-item">
         <a class="nav-link" routerLink="user">Staff</a>
       </li>
@@ -16,9 +16,9 @@
       <li *ngIf="authority === 'manager'" class="nav-item">
         <a class="nav-link" routerLink="menu">Menu</a>
       </li>
-      <li *ngIf="authority === 'manager'" class="nav-item">
+      <!--<li *ngIf="authority === 'manager'" class="nav-item">
         <a class="nav-link" routerLink="ratings">Ratings</a>
-      </li>
+      </li>-->
       <li *ngIf="authority === 'manager'" class="nav-item">
         <a class="nav-link" routerLink="roles">Roles</a>
       </li>
@@ -45,7 +45,7 @@
         <a class="nav-link" routerLink="login">Login</a>
       </li>
       <li *ngIf="authority && authority === 'manager' " class="nav-item">
-        <a class="nav-link" (click)="logout()" style="margin-left: 350px;" routerLink="home">Logout</a>
+        <a class="nav-link" (click)="logout()" style="margin-left: 400px;" routerLink="home">Logout</a>
       </li>
       <li *ngIf="authority && authority === 'customer'" class="nav-item">
         <a class="nav-link" (click)="logout()" style="margin-left: 400px;" routerLink="home"></a>

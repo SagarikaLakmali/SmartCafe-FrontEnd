@@ -10,6 +10,7 @@ import { ConfirmationService, MenuItem } from 'primeng/api';
 import { TokenStorageService } from '../auth/token-storage.service';
 import { OrderService } from '../services/order.service';
 import { Order } from '../model/Order';
+import { RequestModel } from '../model/RequestModel';
 
 @Component({
   selector: 'app-user',
@@ -47,6 +48,10 @@ export class CustomerMenuComponent implements OnInit {
     message: null
   }
 
+  request: RequestModel={
+    name: null
+  }
+
   allMenusResponse : AllMenusResponse;
 
   filterMenuName: string;
@@ -69,6 +74,8 @@ export class CustomerMenuComponent implements OnInit {
 
   orders: Array<Order>;
 
+  filterName: string;
+
   ngOnInit() {
     this.isSelected = false;
     this.loaded = false;
@@ -88,7 +95,8 @@ export class CustomerMenuComponent implements OnInit {
       this.page = 0;
     }
 
-    this.menuService.findAllMenus(this.page)
+    this.request.name = this.filterName
+    this.menuService.findAllMenus(this.request, this.page)
       .subscribe((allMenusResponse: AllMenusResponse) => {
         this.allMenusResponse = allMenusResponse
         if (this.allMenusResponse.content.length == 0) {
@@ -105,6 +113,7 @@ export class CustomerMenuComponent implements OnInit {
     this.loading = true;
     this.page = event.first / 12;
 
+    this.filterName = new URLSearchParams(stringify(event.filters.name)).get("value");
     this.getAllMenus(false);
   }
 
@@ -194,7 +203,7 @@ export class CustomerMenuComponent implements OnInit {
     .subscribe(orders => {
       this.orders = orders;
 
-      if(this.orders){
+      if(this.orders && this.orders.length > 0){
         this.orderStatus = true;
       }else{
         this.orderStatus = false;

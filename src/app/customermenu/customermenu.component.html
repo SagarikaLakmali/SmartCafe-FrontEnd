@@ -31,7 +31,7 @@
     (onLazyLoad)="fetchMenusLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allMenusResponse.totalElements [loading]="loading"> 
       <ng-template pTemplate="header" let-columns>
         <tr style="font-size: 17px; color: azure;">
-          <th style="width: 20%;">Name</th>
+          <th style="width: 20%;">Name <input  size="10" pInputText type="text" (input)="allMenusTable.filter($event.target.value, 'name', 'equals')" style="width: 100%; color: black;"></th>
           <th style="width: 30%;">Description</th>
           <th style="width: 15%;">Price</th>
           <th style="width: 25%;">Image</th>
@@ -71,7 +71,7 @@
           <td><div *ngFor="let item of order.menuItems">{{item.description}}</div></td>
           <td>{{order.total | number:'1.2-2' }}</td>     
           <td style="text-align: center;" *ngIf="order.status != 'DELIVERED'">{{order.status.replace('_', ' ')}}</td>
-          <td style="text-align: center;" *ngIf="order.status == 'DELIVERED'">
+          <td style="text-align: center;" *ngIf="order.status === 'DELIVERED'">
             <div style="font-size: 12px; padding-bottom: 2px;" *ngIf="rate"><strong>Rate</strong>
               <button type="submit" (click)="rateOrder(order,1)" style="background-color:red">1</button>
               <button type="submit" (click)="rateOrder(order,2)" style="background-color:orange">2</button>

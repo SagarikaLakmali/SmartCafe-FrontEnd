@@ -1,3 +1,33 @@
-<h4>Content from Server Reports</h4>
-{{board}}
-{{errorMessage}}
+<div class="mainContent" >
+    <p-confirmDialog header="" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+    <div style="height: 6px;">
+      <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="!loaded"></p-progressBar>
+    </div>
+    <div class="ui-g-12"></div>  
+    <div class="sub-topic">Reports</div>
+</div>
+
+<div class="ui-grid-row" style="float: left; width: 100%; padding-top: 15px">
+  <div class="ui-grid-col-3">Daily Sales Report</div>          
+  <div class="ui-grid-col-6">            
+    <button class="btn-info" (click)="generateDailySalesReport()">Generate</button>
+  </div>
+</div>
+<div class="ui-grid-row" style="float: left; width: 100%; padding-top: 15px">
+  <div class="ui-grid-col-3">Weekly Sales Report</div>          
+  <div class="ui-grid-col-6">            
+    <button  class="btn-info" (click)="generateWeeklySalesReport()">Generate</button>
+  </div>
+</div>
+<div class="ui-grid-row" style="float: left; width: 100%; padding-top: 15px">
+  <div class="ui-grid-col-3">Monthly Sales Report</div>          
+  <div class="ui-grid-col-6">            
+    <button class="btn-info" (click)="generateMonthlySalesReport()">Generate</button>
+  </div>
+</div>
+<div class="ui-grid-row" style="float: left; width: 100%; padding-top: 15px">
+    <div class="ui-grid-col-3">Item Demand Report</div>          
+    <div class="ui-grid-col-6">            
+      <button class="btn-info" (click)="generateItemDemandReport()">Generate</button>
+    </div>
+  </div>

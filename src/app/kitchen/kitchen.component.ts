@@ -64,7 +64,6 @@ export class KitchenComponent implements OnInit {
     this.isSelected = false;
     this.loaded = false;
     this.getAllOrders(true);
-    this.loaded = true;
   }
 
   close(){
@@ -80,6 +79,7 @@ export class KitchenComponent implements OnInit {
     this.orderService.findAllPendingOrdersforKitchen(this.page)
       .subscribe((allOrdersResponse: AllOrdersResponse) => {
         this.allOrdersResponse = allOrdersResponse
+        this.loaded = true;
         if (this.allOrdersResponse.content.length == 0) {
           this.paginator = false;
         } else {
