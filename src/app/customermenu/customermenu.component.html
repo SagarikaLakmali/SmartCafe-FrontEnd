@@ -7,14 +7,14 @@
     <div class="ui-g-12"></div>
   
     <div class="row" [hidden]="!error" *ngIf="errorMessage">  
-      <div class="alert alert-danger alert-dismissible">  
+      <div class="alert alert-danger alert-dismissible" style="width: 98%;">  
         <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
         <strong>{{errorMessage}}</strong>  
       </div>  
     </div>   
   
     <div class="row" [hidden]="!success" *ngIf="successMessage">  
-      <div class="alert alert-success alert-dismissible">  
+      <div class="alert alert-success alert-dismissible" style="width: 98%;">  
         <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
         <strong>{{successMessage}}</strong>  
       </div>  
@@ -26,7 +26,7 @@
     <span *ngIf="orderStatus"><strong><br><a (click)="viewOrderStatus()">Order Status</a></strong></span>
 </div>
   
-<div *ngIf="!showCart">
+<div *ngIf="!showCart && !orderStatusView">
   <p-table #allMenusTable [columns]="cols" *ngIf="allMenusResponse"  [value]="allMenusResponse.content" [lazy]="true"
     (onLazyLoad)="fetchMenusLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allMenusResponse.totalElements [loading]="loading"> 
       <ng-template pTemplate="header" let-columns>
@@ -53,8 +53,41 @@
   </p-table>
   <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
 </div>
-
-<div *ngIf="showCart">
+<div *ngIf="orderStatusView">
+  <p-table #cartTable [columns]="cols" *ngIf="orders"  [value]="orders" [loading]="loading"> 
+      <ng-template pTemplate="header" let-columns>
+        <tr style="font-size: 17px; color: azure;">
+          <th style="width: 10%;">Order Id</th>
+          <th style="width: 20%;">Name</th>
+          <th style="width: 40%;">Description</th>
+          <th style="width: 10%;">Total</th>
+          <th style="width: 20%;text-align: center;"></th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-order let-i="rowIndex">
+        <tr style="font-size: 15px">
+          <td>{{order.guid}}</td>
+          <td><div *ngFor="let item of order.menuItems">{{item.name}}</div></td>
+          <td><div *ngFor="let item of order.menuItems">{{item.description}}</div></td>
+          <td>{{order.total | number:'1.2-2' }}</td>     
+          <td style="text-align: center;" *ngIf="order.status != 'DELIVERED'">{{order.status.replace('_', ' ')}}</td>
+          <td style="text-align: center;" *ngIf="order.status == 'DELIVERED'">
+            <div style="font-size: 12px; padding-bottom: 2px;" *ngIf="rate"><strong>Rate</strong>
+              <button type="submit" (click)="rateOrder(order,1)" style="background-color:red">1</button>
+              <button type="submit" (click)="rateOrder(order,2)" style="background-color:orange">2</button>
+              <button type="submit" (click)="rateOrder(order,3)" style="background-color:yellow">3</button>
+              <button type="submit" (click)="rateOrder(order,4)" style="background-color:greenyellow">4</button>
+              <button type="submit" (click)="rateOrder(order,5)" style="background-color:green">5</button>
+            </div>
+            <button type="submit" class="btn-Success" (click)="requestBill(order)">Request Bill</button>           
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
+  <span>Above Prices are Inclusive of Service Charge (10%) and Government Taxes (VAT - 7%, NBT - 2%)</span>
+</div>
+<div *ngIf="showCart && !orderStatusView">
   <p-table #cartTable [columns]="cols" *ngIf="cartItems"  [value]="cartItems" [loading]="loading"> 
       <ng-template pTemplate="header" let-columns>
         <tr style="font-size: 17px; color: azure;">
@@ -79,11 +112,13 @@
       </ng-template>
   </p-table>
   <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
-  <span><strong><br>Sub Total: {{ ordertotal | number:'1.2-2' }} </strong><br>(exclusive of Service Charge and Government Taxes)</span>
+  <span><strong><br>Sub Total: {{ ordertotal | number:'1.2-2' }} </strong><br>(Exclusive of Service Charge and Government Taxes)</span>
   <div style="margin-top: 25px; float: left; text-align: right; width: 96%">
     <div class="ui-dialog-buttonpane ui-helper-clearfix">
       <button type="submit" class="btn-dis" (click)="clearCart()" *ngIf="ordertotal > 0">Clear Cart</button> &nbsp;
       <button type="submit" class="btn-Success" (click)="order()" *ngIf="ordertotal > 0">Order</button>
     </div>
 </div>
+
+
   

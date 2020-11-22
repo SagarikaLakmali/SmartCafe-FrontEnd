@@ -123,7 +123,7 @@ export class RolesComponent implements OnInit {
 
   fetchRolesLazy(event) {
     this.loading = true;
-    this.page = event.first / 15;
+    this.page = event.first / 12;
 
     this.getAllRoles(false);
   }

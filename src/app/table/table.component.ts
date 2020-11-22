@@ -170,7 +170,7 @@ export class TableComponent implements OnInit {
 
   fetchTablesLazy(event) {
     this.loading = true;
-    this.page = event.first / 15;
+    this.page = event.first / 12;
 
     this.getAllTables(false);
   }

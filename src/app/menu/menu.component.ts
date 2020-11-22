@@ -35,7 +35,8 @@ export class MenuComponent implements OnInit {
     price: null,
     createdBy: null,
     updatedBy: null,
-    available: null
+    available: null,
+    readyToDeliver: null
   }
 
   response: CommonResponse= {
@@ -91,6 +92,7 @@ export class MenuComponent implements OnInit {
           this.menu.image = "";
           this.menu.price = null;
           this.menu.available = false;
+          this.menu.readyToDeliver = false;
           this.selectedFile = null;
           this.ngOnInit();
         }, error => {
@@ -158,6 +160,7 @@ export class MenuComponent implements OnInit {
     this.menu.image = "";
     this.menu.price = null;
     this.menu.available = false;
+    this.menu.readyToDeliver = false;
     this.selectedFile = null;
     this.errorMessage = "";
     this.successMessage = "";
@@ -174,7 +177,7 @@ export class MenuComponent implements OnInit {
 
   fetchMenusLazy(event) {
     this.loading = true;
-    this.page = event.first / 15;
+    this.page = event.first / 12;
 
     this.getAllMenus(false);
   }
@@ -204,6 +207,7 @@ export class MenuComponent implements OnInit {
     this.menu.id = menu.id;
     this.menu.price = menu.price;
     this.menu.available = menu.available;
+    this.menu.readyToDeliver = menu.readyToDeliver;
     this.menu.image = menu.image;
     this.update = true;
   }

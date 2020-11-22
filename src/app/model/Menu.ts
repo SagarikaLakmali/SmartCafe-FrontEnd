@@ -8,4 +8,5 @@ export class Menu {
     createdBy: string;
     updatedBy: string;
     available: boolean;
+    readyToDeliver: boolean;
 }

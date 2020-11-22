@@ -39,11 +39,17 @@
           <input pInputText [(ngModel)]="menu.price" style="width: 90%" ngMaxlength=7 type="number"/>
       </div>
 
-      <div class="ui-g-2">
+      <div class="ui-g-1">
         Available
       </div>
-      <div class="ui-g-4">
+      <div class="ui-g-1">
         <p-checkbox binary="true" [(ngModel)]="menu.available" [value]="menu.available"></p-checkbox>
+      </div>
+      <div class="ui-g-1">
+        Ready
+      </div>
+      <div class="ui-g-3">
+        <p-checkbox binary="true" [(ngModel)]="menu.readyToDeliver" [value]="menu.readyToDeliver"></p-checkbox>
       </div>
 
       <div class="ui-g-2">

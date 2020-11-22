@@ -1,0 +1,53 @@
+<div class="mainContent" >
+    <p-confirmDialog header="" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+    <div style="height: 6px;">
+      <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="!loaded"></p-progressBar>
+    </div>
+  
+    <div class="ui-g-12"></div>
+  
+    <div class="row" [hidden]="!error" *ngIf="errorMessage">  
+      <div class="alert alert-danger alert-dismissible" style="width: 98%;">  
+        <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+        <strong>{{errorMessage}}</strong>  
+      </div>  
+    </div>   
+  
+    <div class="row" [hidden]="!success" *ngIf="successMessage">  
+      <div class="alert alert-success alert-dismissible" style="width: 98%;">  
+        <button type="button" class="close" data-dismiss="alert" (click)="close()">×</button>  
+        <strong>{{successMessage}}</strong>  
+      </div>  
+    </div>  
+  
+    <div class="sub-topic">Orders</div>
+</div>
+  
+<div>
+  <p-table #allOrdersTable [columns]="cols" *ngIf="allOrdersResponse"  [value]="allOrdersResponse.content" [lazy]="true"
+    (onLazyLoad)="fetchOrdersLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allOrdersResponse.totalElements [loading]="loading"> 
+      <ng-template pTemplate="header" let-columns>
+        <tr style="font-size: 17px; color: azure;">
+          <th style="width: 10%;">Order Id</th>
+          <th style="width: 25%;">Name</th>
+          <th style="width: 40%;">Description</th>
+          <th style="width: 10%;">Table</th>
+          <th style="width: 15%;text-align: center;">Action</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-order let-i="rowIndex">
+        <tr style="font-size: 15px" *ngIf="loggedInUser && (order.steward == null  || order.steward === loggedInUser)">
+          <td>{{order.guid}}</td>
+          <td><div *ngFor="let item of order.menuItems">{{item.name}}</div> </td>
+          <td><div *ngFor="let item of order.menuItems">{{item.description}}</div> </td>
+          <td>{{order.tableName}}</td>
+          <td style="text-align: center;">
+            <span *ngIf="order.status === 'PREPARED' || order.status === 'PENDING'"><button type="submit" class="btn-Success" (click)="assignedToMe(order)">Assign to Me</button></span>  
+            <span *ngIf="order.status === 'ASSIGNED_STEWARD'"><button type="submit" class="btn-Success" (click)="deliveryCompleted(order)">Delivered</button></span>             
+          </td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
+</div>
+  

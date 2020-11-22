@@ -1,0 +1,47 @@
+<div class="mainContent" >
+    <p-confirmDialog header="" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
+    <div style="height: 6px;">
+      <p-progressBar mode="indeterminate" [style]="{'height': '6px'}" *ngIf="!loaded"></p-progressBar>
+    </div>
+  
+    <div class="ui-g-12"></div> 
+  
+    <div class="sub-topic">All Orders</div>
+</div>
+  
+<div>
+  <p-table #allOrdersTable [columns]="cols" *ngIf="allOrdersResponse"  [value]="allOrdersResponse.content" [lazy]="true"
+    (onLazyLoad)="fetchOrdersLazy($event)" [paginator]="paginator" [rows]="15" [totalRecords]=allOrdersResponse.totalElements [loading]="loading"> 
+      <ng-template pTemplate="header" let-columns>
+        <tr style="font-size: 17px; color: azure;">
+          <th style="width: 5%;">Order Id</th>
+          <th style="width: 15%;">Name</th>
+          <th style="width: 37%;">Description</th>
+          <th style="width: 5%;">Table</th>
+          <th style="width: 8%;">Chef</th>
+          <th style="width: 10%;">Steward</th>
+          <th style="width: 15%;text-align: center;">Status</th>
+          <th style="width: 5%;text-align: center;">Rating</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-order let-i="rowIndex">
+        <tr style="font-size: 15px">
+          <td>{{order.guid}}</td>
+          <td><div *ngFor="let item of order.menuItems">{{item.name}}</div> </td>
+          <td><div *ngFor="let item of order.menuItems">{{item.description}}</div> </td>
+          <td>{{order.tableName}}</td>
+          <td>{{order.chef}}</td>
+          <td>{{order.steward}}</td>
+          <td style="text-align: center;">{{order.status.replace('_', ' ')}}</td>
+          <td style="text-align: center;" *ngIf="order.rating === 0"></td>
+          <td style="text-align: center;" *ngIf="order.rating === 1"><button type="submit" style="background-color:red">1</button></td>
+          <td style="text-align: center;" *ngIf="order.rating === 2"><button type="submit" style="background-color:orange">2</button></td>
+          <td style="text-align: center;" *ngIf="order.rating === 3"><button type="submit" style="background-color:yellow">3</button></td>
+          <td style="text-align: center;" *ngIf="order.rating === 4"><button type="submit" style="background-color:greenyellow">4</button></td>
+          <td style="text-align: center;" *ngIf="order.rating === 5"><button type="submit" style="background-color:green">5</button></td>
+        </tr>
+      </ng-template>
+  </p-table>
+  <div *ngIf="!paginator" class ="norecord ">No Record Found </div>
+</div>
+  

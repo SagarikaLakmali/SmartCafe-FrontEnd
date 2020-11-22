@@ -18,17 +18,20 @@ export class AppComponent implements OnInit {
       this.userName = this.tokenStorage.getUsername();
       this.roles = this.tokenStorage.getAuthorities();
       this.roles.every(role => {
-        if (role === 'ROLE_ADMIN') {
-          this.authority = 'admin';
-          return false;
-        } else if (role === 'ROLE_PM') {
-          this.authority = 'pm';
-          return false;
-        } else if (role === 'MANAGER'){
+        if (role === 'MANAGER'){
           this.authority = 'manager';
           return false;
         } else if (role === 'CUSTOMER'){
           this.authority = 'customer';
+          return false;
+        }else if (role === 'CHEF'){
+          this.authority = 'chef';
+          return false;
+        }else if (role === 'STEWARD'){
+          this.authority = 'steward';
+          return false;
+        }else if (role === 'CASHIER'){
+          this.authority = 'cashier';
           return false;
         }
         this.authority = 'user';
@@ -40,6 +43,5 @@ export class AppComponent implements OnInit {
   logout() {
     this.tokenStorage.signOut();
     this.authority = null;
-    //window.location.reload();
   }
 }

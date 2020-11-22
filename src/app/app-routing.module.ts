@@ -14,6 +14,10 @@ import { RatingsComponent } from './ratings/ratings.component';
 import { RolesComponent } from './roles/roles.component';
 import { DepartmentsComponent } from './departments/departments.component';
 import { CustomerMenuComponent } from './customermenu/customermenu.component';
+import { KitchenComponent } from './kitchen/Kitchen.component';
+import { StewardComponent } from './steward/steward.component';
+import { CashierComponent } from './cashier/cashier.component';
+import { OrdersComponent } from './orders/orders.component';
 
 const routes: Routes = [
     {
@@ -58,6 +62,10 @@ const routes: Routes = [
         component: RatingsComponent
     },
     {
+        path: 'orders',
+        component: OrdersComponent
+    },
+    {
         path: 'roles',
         component: RolesComponent
     },
@@ -66,14 +74,27 @@ const routes: Routes = [
         component: DepartmentsComponent
     },
     {
+        path: 'customermenu',
+        component: CustomerMenuComponent
+    },
+    {
+        path: 'chefview',
+        component: KitchenComponent
+    },
+    {
+        path: 'stewardview',
+        component: StewardComponent
+    },
+    {
+        path: 'cashierview',
+        component: CashierComponent
+    },
+    {
         path: '',
         redirectTo: 'login',
         pathMatch: 'full'
     },
-    {
-        path: 'customermenu',
-        component: CustomerMenuComponent
-    },
+    
 ];
 
 @NgModule({

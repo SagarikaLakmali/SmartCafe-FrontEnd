@@ -61,6 +61,10 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HttpModule } from '@angular/http';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { CustomerMenuComponent } from './customermenu/customermenu.component';
+import { KitchenComponent } from './kitchen/Kitchen.component';
+import { StewardComponent } from './steward/steward.component';
+import { CashierComponent } from './cashier/cashier.component';
+import { OrdersComponent } from './orders/orders.component';
 
 @NgModule({
   declarations: [
@@ -77,7 +81,11 @@ import { CustomerMenuComponent } from './customermenu/customermenu.component';
     RatingsComponent,
     RolesComponent,
     DepartmentsComponent,
-    CustomerMenuComponent
+    CustomerMenuComponent,
+    KitchenComponent,
+    StewardComponent,
+    CashierComponent,
+    OrdersComponent
   ],
   imports: [
     BrowserModule,

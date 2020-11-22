@@ -288,7 +288,7 @@ export class UsersComponent implements OnInit {
 
   fetchUsersLazy(event) {
     this.loading = true;
-    this.page = event.first / 15;
+    this.page = event.first / 12;
 
     this.getAllUsers(false);
   }

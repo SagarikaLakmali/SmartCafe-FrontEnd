@@ -123,7 +123,7 @@ export class DepartmentsComponent implements OnInit {
 
   fetchDepartmentsLazy(event) {
     this.loading = true;
-    this.page = event.first / 15;
+    this.page = event.first / 12;
 
     this.getAllDepartments(false);
   }
